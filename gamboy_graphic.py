@@ -1,3 +1,4 @@
+
 #graphics project
 #Erik B.
 
@@ -95,6 +96,7 @@ def play_music():
     pygame.mixer.music.load(song)
     pygame.mixer.music.play(-1)
 
+
 #list of sprites and 'objects'
 stars = []
 aliens = []
@@ -172,6 +174,7 @@ done = False
 powered_on = False
 shoot = False
 show_instruction = True
+music_playing = False
 
 #invader location and speed
 xpos = 410
@@ -191,7 +194,6 @@ while not done:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 powered_on = not powered_on
-                play_music()
             elif event.key == pygame.K_RETURN:
                 show_instruction = False
             elif event.key == pygame.K_RIGHT:
@@ -201,11 +203,20 @@ while not done:
             elif event.key == pygame.K_UP and powered_on:
                 shoot = True
                 lazer.play()
-            elif event.key == pygame.K_z:
+            elif event.key == pygame.K_x:
                 song_num += 1
                 if song_num >= len(song_list):
                     song_num = 0
+                song = song_list[song_num]
                 play_music()
+                
+            elif event.key == pygame.K_z:
+                if music_playing:
+                    pygame.mixer.pause()
+                    music_playing = False
+                else:
+                    play_music()
+                    music_playing = True
                 
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
@@ -308,17 +319,24 @@ while not done:
         header = BIG_FONT.render('Welcome to Gameboy Similuator 2011', True, WHITE)
         inst1 = SMALL_FONT.render('Press the SPACE bar to power on the game.',True, WHITE)
         inst2 = SMALL_FONT.render('Press the left and right arrows to move, and the up arrow to shoot.',True, WHITE)
-        inst3 = BIG_FONT.render('Press ENTER to begin.',True, WHITE)
+        inst3 = SMALL_FONT.render('Press "z" to start music and "x" to play next song.',True, WHITE)
+        inst4 = BIG_FONT.render('Press ENTER to begin.',True, WHITE)
         
         width_head = header.get_width()
         width1 = inst1.get_width()
         width2 = inst2.get_width()
         width3 = inst3.get_width()
+        width4 = inst4.get_width()
         
         screen.blit(header, [width//2 - width_head//2,150])
         screen.blit(inst1, [width//2 - width1//2,300])
         screen.blit(inst2, [width//2 - width2//2,320])
-        screen.blit(inst3, [width//2 - width3//2,380])
+        screen.blit(inst3, [width//2 - width3//2,340])
+        screen.blit(inst4, [width//2 - width4//2,380])
+
+    #display which song is playing
+    song_header = SMALL_FONT.render(song[7:-4],True, WHITE)
+    screen.blit(song_header, [0,580])
 
     #update
     pygame.display.flip()
